@@ -15,8 +15,8 @@ from supabase import create_client, Client
 load_dotenv()
 
 app = Flask(__name__)
-# Enable CORS for the React frontend
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Enable CORS for the React frontend (allow Vercel frontend)
+CORS(app, resources={r"/*": {"origins": ["https://fraud-detection-system-jade.vercel.app", "http://localhost:3000", "http://localhost:5173"]}})
 
 @app.route('/', methods=['GET'])
 def index():

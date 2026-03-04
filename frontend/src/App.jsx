@@ -291,7 +291,7 @@ const ScanPage = ({ user }) => {
         if (!user) return;
         setHistoryLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5000/scans?user_id=${user.id}`);
+            const response = await axios.get(`https://fraud-detection-system-eaxw.onrender.com/scans?user_id=${user.id}`);
             setHistory(response.data);
         } catch (err) {
             console.error("Failed to fetch history:", err);
@@ -305,7 +305,7 @@ const ScanPage = ({ user }) => {
         if (!window.confirm("Are you sure you want to delete this scan?")) return;
 
         try {
-            await axios.delete(`http://localhost:5000/scans/${scanId}?user_id=${user.id}`);
+            await axios.delete(`https://fraud-detection-system-eaxw.onrender.com/scans/${scanId}?user_id=${user.id}`);
             setHistory(prev => prev.filter(s => s.id !== scanId));
             if (result && result.id === scanId) setResult(null);
         } catch (err) {
@@ -479,7 +479,7 @@ const ScanPage = ({ user }) => {
                 formData.append('file', compressedFile);
             }
 
-            const response = await axios.post('http://localhost:5000/analyze', formData, {
+            const response = await axios.post('https://fraud-detection-system-eaxw.onrender.com/analyze', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
             setResult(response.data)
