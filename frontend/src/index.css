@@ -28,14 +28,14 @@
   /* Deep Obsidian Stone */
   --card-bg: rgba(28, 25, 23, 0.8);
   /* Dark Roast Stone */
-  --card-border: rgba(250, 204, 21, 0.1);
-  /* Subtle Gold Border */
+  --card-border: rgba(13, 148, 136, 0.15);
+  /* Subtle Teal Border */
   --text-primary: #fafaf9;
   /* Warm Off-White */
   --text-secondary: #a8a29e;
   /* Muted Warm Gray */
-  --accent-color: #facc15;
-  /* Radiant Gold - Massive visibility */
+  --accent-color: #0d9488;
+  /* Deep Teal */
   --safe-color: #22c55e;
   /* Vibrant Green */
   --suspicious-color: #f59e0b;
@@ -60,6 +60,14 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   transition: background-color var(--transition), color var(--transition);
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
 }
 
 /* Background Gradients */
@@ -85,7 +93,7 @@ body::before {
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 0 1.5rem;
 }
 
 /* --- Theme Toggle --- */
@@ -109,12 +117,30 @@ body::before {
 }
 
 /* --- Navigation --- */
+.main-header {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-effect);
+  -webkit-backdrop-filter: var(--glass-effect);
+  border-bottom: 2px solid var(--card-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 110px;
+  display: flex;
+  align-items: center;
+}
+
+[data-theme='dark'] .main-header {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 0;
-  margin-bottom: 3rem;
+  width: 100%;
 }
 
 .nav-links {
@@ -126,15 +152,31 @@ nav {
 .nav-links a {
   color: var(--text-secondary);
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
   transition: all 0.3s ease;
-  font-size: 1.7rem;
-  letter-spacing: -0.2px;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  padding: 0.5rem 0;
+  position: relative;
 }
 
-.nav-links a:hover,
+.nav-links a:hover {
+  color: var(--text-primary);
+}
+
 .nav-links a.active {
   color: var(--accent-color);
+}
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent-color);
+  border-radius: 2px;
 }
 
 /* --- Hero Section --- */
@@ -222,6 +264,21 @@ nav {
 
 [data-theme='dark'] .card {
   box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* --- Auth Card (Login/Signup Glass Effect) --- */
+.auth-card {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme='dark'] .auth-card {
+  background: rgba(20, 18, 16, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* --- Guidelines Grid --- */
@@ -700,8 +757,8 @@ nav {
 }
 
 .hl-card {
-  background: rgba(28, 25, 23, 0.03);
-  border: 2px solid var(--card-border);
+  background: rgba(13, 148, 136, 0.05);
+  border: 1px solid rgba(13, 148, 136, 0.15);
   padding: 3rem 2rem;
   border-radius: 32px;
   text-align: center;
@@ -957,4 +1014,566 @@ nav {
   color: #fff;
   font-size: 0.8rem;
   font-weight: 800;
+}
+
+/* ── Guide Page Video Player ── */
+.video-player-wrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.video-browser-chrome {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chrome-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.chrome-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+}
+
+.chrome-address {
+  flex: 1;
+  text-align: center;
+  padding: 0.3rem 1rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.chrome-theme-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.video-screen {
+  position: relative;
+  background: #000;
+  line-height: 0;
+}
+
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+.video-controls {
+  padding: 0.75rem 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 99px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: height 0.2s;
+}
+
+.progress-bar-track:hover {
+  height: 7px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: 99px;
+  transition: width 0.2s linear;
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.ctrl-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Guide Page Demo Player ── */
+.demo-frame {
+  padding: 1rem;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.demo-hero {
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.demo-badge {
+  display: inline-block;
+  background: rgba(13, 148, 136, 0.15);
+  color: #0d9488;
+  border-radius: 99px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.demo-cta {
+  display: inline-block;
+  background: #0d9488;
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 0.4rem 1rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  margin-top: 0.75rem;
+  cursor: pointer;
+}
+
+.demo-section {
+  padding: 1.25rem;
+  border-radius: 12px;
+  flex: 1;
+}
+
+.demo-section-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.demo-section-sub {
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+.demo-chat-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  margin-top: 0.75rem;
+}
+
+.demo-rule-card {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+}
+
+.demo-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  text-align: center;
+  padding: 0.25rem;
+  background: rgba(13, 148, 136, 0.07);
+  border-radius: 8px;
+}
+
+.demo-analyzing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.demo-shield-pulse {
+  width: 50px;
+  height: 60px;
+  background: var(--accent-color);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 70%, 50% 100%, 0% 70%);
+  animation: liquid-fill-up 3s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+.demo-battery {
+  width: 18px;
+  height: 30px;
+  border: 3px solid var(--text-primary);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.demo-battery-high::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 85%;
+  background: #ef4444;
+}
+
+.demo-input-preview {
+  width: 100%;
+  padding: 0.4rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--card-border);
+}
+
+/* ══════════════════════════════════════════════
+   Scam Education Cards — Flip Card System
+══════════════════════════════════════════════ */
+
+/* Outer wrapper — controls perspective and hover glow */
+.scam-card-outer {
+  position: relative;
+  height: 580px;
+  cursor: pointer;
+  perspective: 1400px;
+}
+
+/* Animated glow ring that expands on hover */
+.scam-glow-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 30px;
+  background: var(--scam-color, #0d9488);
+  opacity: 0;
+  z-index: 0;
+  filter: blur(18px);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.scam-card-outer:hover .scam-glow-ring {
+  opacity: 0.25;
+}
+
+/* Card flip container */
+.scam-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: 28px;
+  z-index: 1;
+}
+
+.scam-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Shared face styles */
+.scam-card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  transition: border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.scam-card-outer:hover .scam-card-face {
+  border-color: var(--scam-color, currentColor);
+}
+
+/* ── Front face ── */
+.scam-img-wrap {
+  position: relative;
+  height: 200px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.scam-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.scam-card-outer:hover .scam-img {
+  transform: scale(1.06);
+}
+
+.scam-img-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scam-danger-chip {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.5px;
+  animation: danger-pulse 2s infinite;
+  z-index: 2;
+}
+
+@keyframes danger-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+.scam-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.scam-type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scam-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.scam-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.scam-title-line {
+  height: 3px;
+  width: 36px;
+  border-radius: 2px;
+  margin-top: 5px;
+}
+
+.scam-msg-bubble {
+  background: rgba(239, 68, 68, 0.05);
+  border-left: 4px solid #ef4444;
+  border-radius: 12px;
+  padding: 1rem 1rem 1rem 1.1rem;
+  position: relative;
+  flex: 1;
+}
+
+.scam-msg-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ef4444;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.scam-msg-text {
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+}
+
+.scam-flip-hint {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  opacity: 0.7;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  animation: float-hint 2.5s ease-in-out infinite;
+}
+
+@keyframes float-hint {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ── Back face ── */
+.scam-card-back {
+  transform: rotateY(180deg);
+  border-top: 4px solid var(--scam-color);
+}
+
+.scam-back-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.scam-back-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+.scam-back-title {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.scam-warning-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+}
+
+.scam-warning-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.scam-tip-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.scam-tip-bullet {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin-top: 1px;
+}
+
+.scam-tip-text {
+  line-height: 1.5;
+}
+
+/* ── Scam Explorer Cards ── */
+.explorer-card {
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 24px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.explorer-card:hover {
+  border-color: var(--ecard-color);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+}
+
+.explorer-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 26px;
+  opacity: 0;
+  filter: blur(20px);
+  z-index: -1;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.explorer-card:hover .explorer-glow {
+  opacity: 0.15;
+}
+
+.explorer-card-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.explorer-card:hover .explorer-card-cta {
+  opacity: 1;
+  transform: translateY(0);
 }

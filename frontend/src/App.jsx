@@ -10,6 +10,9 @@ import {
 } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import AuthPage from './pages/AuthPage'
+import GuidePage from './pages/GuidePage'
+import ScamDetailPage from './pages/ScamDetailPage'
+
 import {
     ShieldAlert,
     ShieldCheck,
@@ -32,9 +35,14 @@ import {
     Mic,
     LogOut,
     LogIn,
-    Trash2
+    Trash2,
+    Headphones
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000'
+    : 'https://fraud-detection-system-eaxw.onrender.com';
 
 // --- Theme Toggle Component ---
 const ThemeToggle = ({ theme, toggleTheme }) => (
@@ -54,68 +62,74 @@ const Header = ({ theme, toggleTheme, user }) => {
     };
 
     return (
-        <nav className="container">
-            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none' }}>
-                <div style={{ background: 'var(--accent-color)', padding: '0.6rem', borderRadius: '14px' }}>
-                    <Shield color={theme === 'dark' ? '#000' : '#fff'} size={28} />
-                </div>
-                <span style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--text-primary)' }}>Guardian AI</span>
-            </Link>
-            <div className="nav-links">
-                <Link to="/" className={pathname === '/' ? 'active' : ''}>Home</Link>
-                <Link to="/scan" className={pathname === '/scan' ? 'active' : ''}>Check Message</Link>
-                {user ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div className="user-profile-btn" style={{ position: 'relative' }}>
-                            <div className="avatar">
-                                {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
-                            </div>
-                            <span style={{ marginRight: '0.5rem' }}>
-                                {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                            </span>
-                            <div style={{ width: '1px', height: '20px', background: 'var(--card-border)', margin: '0 0.5rem' }}></div>
-                            <button
-                                onClick={handleSignOut}
-                                className="logout-btn"
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.4rem',
-                                    color: 'var(--risk-color)',
-                                    fontWeight: 700,
-                                    padding: '0.2rem 0.5rem',
-                                    fontSize: '0.9rem'
-                                }}
-                            >
-                                <LogOut size={16} /> Logout
-                            </button>
-                        </div>
+        <header className="main-header">
+            <nav className="container">
+                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', textDecoration: 'none' }}>
+                    <div style={{ background: 'var(--accent-color)', padding: '0.6rem', borderRadius: '15px' }}>
+                        <Shield color={theme === 'dark' ? '#000' : '#fff'} size={32} />
                     </div>
-                ) : (
-                    <Link to="/auth" className="cta-button" style={{ padding: '0.6rem 1.4rem', fontSize: '1rem' }}>
-                        Login <LogIn size={18} />
-                    </Link>
-                )}
-                <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-            </div>
-        </nav>
+                    <span style={{ fontWeight: 800, fontSize: '1.6rem', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>Guardian AI</span>
+                </Link>
+                <div className="nav-links">
+                    <Link to="/" className={pathname === '/' ? 'active' : ''}>Home</Link>
+                    <Link to="/scan" className={pathname === '/scan' ? 'active' : ''}>Check Message</Link>
+                    <Link to="/guide" className={pathname === '/guide' ? 'active' : ''}>Guide</Link>
+                    <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+                    {user ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div className="user-profile-btn" style={{ position: 'relative' }}>
+                                <div className="avatar">
+                                    {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
+                                </div>
+                                <span style={{ marginRight: '0.5rem' }}>
+                                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                                </span>
+                                <div style={{ width: '1px', height: '20px', background: 'var(--card-border)', margin: '0 0.5rem' }}></div>
+                                <button
+                                    onClick={handleSignOut}
+                                    className="logout-btn"
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.4rem',
+                                        color: 'var(--risk-color)',
+                                        fontWeight: 700,
+                                        padding: '0.2rem 0.5rem',
+                                        fontSize: '0.9rem'
+                                    }}
+                                >
+                                    <LogOut size={16} /> Logout
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <Link to="/auth" className="cta-button" style={{ padding: '0.5rem 1.2rem', fontSize: '0.9rem' }}>
+                            Login <LogIn size={16} />
+                        </Link>
+                    )}
+
+                </div>
+            </nav>
+        </header>
     )
 }
 
 const Footer = () => (
-    <footer className="container" style={{ textAlign: 'center', marginTop: '8rem', padding: '6rem 0', borderTop: '1px solid var(--card-border)' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2.5rem' }}>
-            <Shield size={48} className="text-accent opacity-30" />
-        </div>
-        <h3 style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>Guardian AI: Protector of our People</h3>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', fontSize: '1.1rem' }}>
-            Helping villagers and citizens stay safe from online thieves. Simple software for a safer digital world.
-        </p>
-        <div style={{ marginTop: '3rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-            © 2026 Guardian AI Digital Safety Project
+    <footer style={{ background: 'rgba(13, 148, 136, 0.05)', textAlign: 'center', padding: '2.5rem 0 2rem', borderTop: '1px solid var(--card-border)' }}>
+        <div className="container">
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+                <Shield size={32} className="text-accent opacity-40" />
+            </div>
+            <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>Guardian AI: Protector of our People</h3>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', fontSize: '0.9rem' }}>
+                Helping villagers and citizens stay safe from online thieves. Simple software for a safer digital world.
+            </p>
+            <div style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                © 2026 Guardian AI Digital Safety Project
+            </div>
         </div>
     </footer>
 )
@@ -269,6 +283,7 @@ const LiquidShieldLoader = () => (
 const ScanPage = ({ user }) => {
     const [message, setMessage] = useState('')
     const [file, setFile] = useState(null)
+    const [audioFile, setAudioFile] = useState(null)
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState(null)
     const [error, setError] = useState(null)
@@ -276,6 +291,7 @@ const ScanPage = ({ user }) => {
     const [historyLoading, setHistoryLoading] = useState(false)
     const resultRef = useRef(null)
     const fileInputRef = useRef(null)
+    const audioInputRef = useRef(null)
     const textareaRef = useRef(null)
     const [isListening, setIsListening] = useState(false)
     const recognitionRef = useRef(null)
@@ -291,7 +307,7 @@ const ScanPage = ({ user }) => {
         if (!user) return;
         setHistoryLoading(true);
         try {
-            const response = await axios.get(`https://fraud-detection-system-eaxw.onrender.com/scans?user_id=${user.id}`);
+            const response = await axios.get(`${API_BASE_URL}/scans?user_id=${user.id}`);
             setHistory(response.data);
         } catch (err) {
             console.error("Failed to fetch history:", err);
@@ -305,7 +321,7 @@ const ScanPage = ({ user }) => {
         if (!window.confirm("Are you sure you want to delete this scan?")) return;
 
         try {
-            await axios.delete(`https://fraud-detection-system-eaxw.onrender.com/scans/${scanId}?user_id=${user.id}`);
+            await axios.delete(`${API_BASE_URL}/scans/${scanId}?user_id=${user.id}`);
             setHistory(prev => prev.filter(s => s.id !== scanId));
             if (result && result.id === scanId) setResult(null);
         } catch (err) {
@@ -479,7 +495,7 @@ const ScanPage = ({ user }) => {
                 formData.append('file', compressedFile);
             }
 
-            const response = await axios.post('https://fraud-detection-system-eaxw.onrender.com/analyze', formData, {
+            const response = await axios.post(`${API_BASE_URL}/analyze`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
             setResult(response.data)
@@ -487,6 +503,35 @@ const ScanPage = ({ user }) => {
             if (user) fetchHistory();
         } catch (err) {
             setError("Trouble connecting to the helper bot. Please check your internet and try again.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const analyzeAudio = async () => {
+        if (!audioFile) return
+        setLoading(true)
+        setError(null)
+        setResult(null)
+        try {
+            const formData = new FormData()
+            formData.append('audio', audioFile)
+            formData.append('language', selectedLang)
+            if (user) formData.append('user_id', user.id)
+
+            const response = await axios.post(`${API_BASE_URL}/analyze-audio`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                timeout: 60000  // audio analysis can take up to 60s
+            })
+            setResult(response.data)
+            setAudioFile(null)
+            if (user) fetchHistory()
+        } catch (err) {
+            if (err.response?.data?.error) {
+                setError(err.response.data.error)
+            } else {
+                setError("Could not analyze the audio. Please try a shorter or clearer recording.")
+            }
         } finally {
             setLoading(false)
         }
@@ -538,8 +583,19 @@ const ScanPage = ({ user }) => {
                             </div>
                         )}
 
+                        {audioFile && (
+                            <div style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(124,58,237,0.08)', borderRadius: '12px', margin: '0 1rem', fontSize: '0.9rem', color: '#7c3aed', fontWeight: 700, border: '1px solid rgba(124,58,237,0.2)' }}>
+                                <Headphones size={16} /> Recording: {audioFile.name}
+                                <span style={{ color: 'rgba(124,58,237,0.6)', fontWeight: 400, fontSize: '0.8rem' }}>
+                                    ({(audioFile.size / (1024 * 1024)).toFixed(1)} MB)
+                                </span>
+                                <button onClick={() => setAudioFile(null)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--risk-color)', padding: '0 0.5rem', marginLeft: 'auto' }}>✕</button>
+                            </div>
+                        )}
+
                         <div className="pill-controls">
                             <div className="pill-group">
+                                {/* Image Upload */}
                                 <input
                                     type="file"
                                     ref={fileInputRef}
@@ -550,9 +606,28 @@ const ScanPage = ({ user }) => {
                                 <button
                                     className="pill-icon-btn highlight-hover"
                                     onClick={() => fileInputRef.current.click()}
-                                    data-tooltip="Add files"
+                                    data-tooltip="Upload image"
+                                    title="Upload image"
                                 >
                                     <Plus size={20} />
+                                </button>
+
+                                {/* Audio Upload */}
+                                <input
+                                    type="file"
+                                    ref={audioInputRef}
+                                    style={{ display: 'none' }}
+                                    accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm,.3gp,.amr"
+                                    onChange={(e) => e.target.files?.[0] && setAudioFile(e.target.files[0])}
+                                />
+                                <button
+                                    className="pill-icon-btn highlight-hover"
+                                    onClick={() => audioInputRef.current.click()}
+                                    data-tooltip="Upload call recording"
+                                    title="Upload call/voice recording"
+                                    style={{ color: audioFile ? 'var(--accent-color)' : 'inherit' }}
+                                >
+                                    <Headphones size={20} />
                                 </button>
 
                                 <select
@@ -575,17 +650,30 @@ const ScanPage = ({ user }) => {
                                     <Mic size={20} style={{ color: isListening ? 'var(--risk-color)' : 'inherit' }} />
                                 </button>
 
-                                <button
-                                    className="analyze-pill-btn"
-                                    onClick={analyzeMessage}
-                                    disabled={loading || (!message.trim() && !file)}
-                                >
-                                    {loading ? (
-                                        <Loader2 className="animate-spin" size={20} />
-                                    ) : (
-                                        <ArrowRight size={20} />
-                                    )}
-                                </button>
+                                {/* Analyze button — audio mode if audioFile loaded, otherwise text/image */}
+                                {audioFile ? (
+                                    <button
+                                        className="analyze-pill-btn"
+                                        onClick={analyzeAudio}
+                                        disabled={loading}
+                                        style={{ background: 'linear-gradient(135deg, #7c3aed, #0d9488)' }}
+                                        title="Analyze call recording"
+                                    >
+                                        {loading ? <Loader2 className="animate-spin" size={20} /> : <Headphones size={20} />}
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="analyze-pill-btn"
+                                        onClick={analyzeMessage}
+                                        disabled={loading || (!message.trim() && !file)}
+                                    >
+                                        {loading ? (
+                                            <Loader2 className="animate-spin" size={20} />
+                                        ) : (
+                                            <ArrowRight size={20} />
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -636,6 +724,18 @@ const ScanPage = ({ user }) => {
                                     {/* Column 2: Details */}
                                     <div style={{ padding: '0 1rem' }}>
                                         <div className="result-details-grid">
+                                            {/* Transcription Block — only shown for audio results */}
+                                            {result.transcription && (
+                                                <div className="analysis-text" style={{ marginBottom: '1rem', background: 'rgba(124,58,237,0.04)', border: '1px solid rgba(124,58,237,0.15)', borderRadius: '16px', padding: '1.5rem' }}>
+                                                    <h3 style={{ color: '#7c3aed', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1.5px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <Headphones size={16} /> Call Transcription
+                                                    </h3>
+                                                    <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--text-secondary)', fontStyle: 'italic', borderLeft: '3px solid #7c3aed', paddingLeft: '1rem' }}>
+                                                        {result.transcription}
+                                                    </p>
+                                                </div>
+                                            )}
+
                                             {/* Analysis Block */}
                                             <div className="analysis-text">
                                                 <h3 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.2rem', letterSpacing: '1.5px' }}>
@@ -805,6 +905,9 @@ function App() {
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/scan" element={<ScanPage user={user} />} />
+                            <Route path="/guide" element={<GuidePage theme={theme} />} />
+                            <Route path="/scam/:slug" element={<ScamDetailPage />} />
+
                             <Route path="/auth" element={<AuthPage user={user} />} />
                         </Routes>
                     </AnimatePresence>
